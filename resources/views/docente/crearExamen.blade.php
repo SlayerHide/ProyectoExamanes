@@ -1,75 +1,113 @@
 <x-layouts.app title="Crear Examen">
-    <div class="p-6 max-w-5xl mx-auto bg-white dark:bg-gray-900 rounded shadow text-black">
-        <h1 class="text-2xl font-bold mb-4">Crear nuevo examen</h1>
+    <div class="p-8 max-w-5xl mx-auto min-h-screen bg-gradient-to-br from-indigo-100 to-purple-200 dark:from-gray-800 dark:to-gray-900 rounded-xl shadow-xl text-gray-800 dark:text-white">
+        <h1 class="text-4xl font-extrabold text-center text-purple-800 dark:text-purple-300 mb-10">✍️ Crear nuevo examen</h1>
 
-        @if(session('status'))
-            <div class="mb-4 bg-green-100 text-green-800 p-3 rounded">{{ session('status') }}</div>
+        @if ($errors->any())
+            <div class="mb-6 bg-red-100 border border-red-300 text-red-800 p-4 rounded-lg">
+                <ul class="list-disc pl-5 space-y-1">
+                    @foreach ($errors->all() as $error)
+                        <li>⚠ {{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
         @endif
 
-        <form method="POST" action="{{ route('docente.examenes.guardar') }}">
+        <form method="POST" action="{{ route('docente.examenes.guardar') }}" id="form-examen" class="space-y-6">
             @csrf
 
-            <div class="mb-4">
-                <label class="block font-semibold mb-1">Título:</label>
-                <input type="text" name="titulo" class="w-full border rounded p-2 text-black" required>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block font-semibold mb-1">📘 Título del Examen:</label>
+                    <input type="text" name="titulo" required maxlength="255"
+                           class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white shadow-sm focus:ring-2 focus:ring-purple-400">
+                </div>
+
+                <div>
+                    <label class="block font-semibold mb-1">⏱ Duración (minutos):</label>
+                    <input type="number" name="duracion" required min="1"
+                           class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white shadow-sm focus:ring-2 focus:ring-purple-400">
+                </div>
             </div>
 
             <div class="mb-4">
-                <label class="block font-semibold mb-1">Descripción:</label>
-                <textarea name="descripcion" class="w-full border rounded p-2 text-black"></textarea>
+                <label class="block font-semibold mb-1">📝 Descripción:</label>
+                <textarea name="descripcion" rows="3" maxlength="500" required
+                          class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-black dark:text-white shadow-sm focus:ring-2 focus:ring-purple-400"></textarea>
             </div>
 
-            <div class="mb-4">
-                <label class="block font-semibold mb-1">Duración (minutos):</label>
-                <input type="number" name="duracion" class="w-full border rounded p-2 text-black" required>
-            </div>
-
-            <div class="mb-4">
-                <label class="block font-semibold mb-1">Grupo Materia ID:</label>
-                <input type="number" name="grupo_materia_id" class="w-full border rounded p-2 text-black" required>
+            <div>
+                <label class="block font-semibold mb-1">🏫 Grupo - Materia:</label>
+                <select name="grupo_materia_id" required
+                        class="w-full p-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white text-black shadow-sm focus:ring-2 focus:ring-purple-400">
+                    <option value="">Seleccione una opción</option>
+                    @foreach ($grupos as $grupo)
+                        <option value="{{ $grupo->id }}">{{ $grupo->nombre }} - {{ $grupo->materia }}</option>
+                    @endforeach
+                </select>
             </div>
 
             <div id="preguntas-container">
-                <h2 class="text-xl font-bold mt-6 mb-2">Preguntas</h2>
+                <h2 class="text-2xl font-bold text-purple-800 dark:text-purple-300 mt-10 mb-4">📚 Preguntas</h2>
 
-                <div class="pregunta border p-4 rounded mb-4" data-index="0">
+                <div class="pregunta bg-white dark:bg-gray-800 border border-purple-300 dark:border-purple-700 p-6 rounded-xl shadow-md space-y-4 mb-6" data-index="0">
                     <input type="hidden" name="preguntas[0][tipo]" value="opcion_multiple">
 
-                    <label class="block font-semibold mb-1">Contenido:</label>
-                    <input type="text" name="preguntas[0][contenido]" class="w-full border p-2 mb-2 text-black" required>
-
-                    <label class="block font-semibold mb-1">Porcentaje:</label>
-                    <input type="number" name="preguntas[0][porcentaje]" class="w-full border p-2 mb-2 text-black" required>
-
-                    <label class="block font-semibold mb-1">Retroalimentación:</label>
-                    <input type="text" name="preguntas[0][retroalimentacion]" class="w-full border p-2 mb-2 text-black">
-
-                    <label class="block font-semibold mb-1">Opciones:</label>
-                    <div class="mb-2">
-                        <input type="text" name="preguntas[0][opciones][0][texto]" placeholder="Texto opción 1" class="w-full border p-2 text-black">
-                        <label class="inline-flex items-center mt-1 text-black">
-                            <input type="checkbox" name="preguntas[0][opciones][0][es_correcta]" class="mr-2"> Correcta
-                        </label>
+                    <div>
+                        <label class="block font-semibold mb-1">Pregunta:</label>
+                        <input type="text" name="preguntas[0][contenido]" required maxlength="500"
+                               class="w-full p-3 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600">
                     </div>
-                    <div class="mb-2">
-                        <input type="text" name="preguntas[0][opciones][1][texto]" placeholder="Texto opción 2" class="w-full border p-2 text-black">
-                        <label class="inline-flex items-center mt-1 text-black">
-                            <input type="checkbox" name="preguntas[0][opciones][1][es_correcta]" class="mr-2"> Correcta
-                        </label>
+
+                    <div>
+                        <label class="block font-semibold mb-1">Porcentaje:</label>
+                        <input type="number" name="preguntas[0][porcentaje]" required min="0" max="100"
+                               class="w-full p-3 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600">
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold mb-1">Retroalimentación:</label>
+                        <input type="text" name="preguntas[0][retroalimentacion]" required maxlength="500"
+                               class="w-full p-3 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600">
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold mb-1">Opciones:</label>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 opciones">
+                            <div>
+                                <input type="text" name="preguntas[0][opciones][0][texto]" placeholder="Opción 1" required
+                                       class="w-full p-3 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600">
+                                <label class="inline-flex items-center mt-2 text-sm">
+                                    <input type="checkbox" name="preguntas[0][opciones][0][es_correcta]" class="mr-2"> Correcta
+                                </label>
+                            </div>
+                            <div>
+                                <input type="text" name="preguntas[0][opciones][1][texto]" placeholder="Opción 2" required
+                                       class="w-full p-3 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600">
+                                <label class="inline-flex items-center mt-2 text-sm">
+                                    <input type="checkbox" name="preguntas[0][opciones][1][es_correcta]" class="mr-2"> Correcta
+                                </label>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-agregar-opcion mt-4 text-blue-600 hover:underline text-sm" data-index="0">
+                            ➕ Agregar otra opción
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <button type="button" id="btn-agregar-pregunta" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition mb-4">
-    + Agregar otra pregunta
-</button>
+            <div class="flex justify-between items-center mt-8">
+                <button type="button" id="btn-agregar-pregunta"
+                        class="bg-blue-500 hover:bg-blue-600 text-white font-medium px-5 py-2 rounded shadow transition">
+                    ➕ Agregar pregunta
+                </button>
 
-
-            <button type="submit" class="bg-purple-600 text-white px-4 py-2 rounded mt-4 hover:bg-purple-700 transition">
-                Guardar Examen
-            </button>
+                <button type="submit"
+                        class="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-2 rounded shadow transition">
+                    ✅ Guardar Examen
+                </button>
+            </div>
         </form>
     </div>
-    <script src="{{ asset('js/crearExamen.js') }}"></script>
 
+    <script src="{{ asset('js/crearExamen.js') }}"></script>
 </x-layouts.app>

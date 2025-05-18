@@ -11,12 +11,27 @@ class ExamenDocenteController extends Controller
 {
     public function crear()
     {
-        return view('docente.crearExamen'); 
+      $grupos = \App\Models\GrupoMateria::where('docente_id', Auth::id())->get();
+      return view('docente.crearExamen', compact('grupos'));
 
     }
 
     public function guardar(Request $request){
       try {
+        $request->validate([
+        'titulo' => 'required|string|max:255',
+        'descripcion' => 'required|string|max:500',
+        'duracion' => 'required|integer|min:1',
+        'grupo_materia_id' => 'required|exists:grupos_materias,id',
+
+        'preguntas' => 'required|array|min:1',
+        'preguntas.*.contenido' => 'required|string|max:500',
+        'preguntas.*.tipo' => 'required|string|in:opcion_multiple',
+        'preguntas.*.porcentaje' => 'required|numeric|min:0|max:100',
+        'preguntas.*.retroalimentacion' => 'required|string|max:500',
+        'preguntas.*.opciones' => 'required|array|min:2',
+        'preguntas.*.opciones.*.texto' => 'required|string|max:255',
+    ]);
     $examen = Examen::create($request->only('titulo', 'descripcion', 'grupo_materia_id', 'duracion'));
 
     foreach ($request->preguntas as $preguntaData) {

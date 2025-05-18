@@ -9,6 +9,7 @@ use App\Http\Controllers\ExamenDocenteController;
 use App\Http\Middleware\RedirectIfAuthenticatedByRole;
 use Livewire\Volt\Volt;
 use App\Http\Controllers\ExamenAlumnoController;
+use App\Http\Controllers\ReporteDocenteController;
 
 // Ruta pública
 Route::get('/', function () {
@@ -56,6 +57,12 @@ Route::middleware(['auth', 'role:administrador'])->group(function () {
         Route::get('/grupos/asignar-alumnos-a-grupo', [GrupoMateriaController::class, 'mostrarFormularioAsignarAlumnos'])->name('grupos.asignaralumnos');
         Route::post('/grupos/asignar-alumnos-a-grupo', [GrupoMateriaController::class, 'asignarAlumnos'])->name('grupos.asignarAlumnos');
     });
+
+    Route::get('/administrador/usuarios', [AdministradorController::class, 'usuarios'])->name('administrador.usuarios');
+    Route::get('/administrador/usuarios/{user}/editar', [AdministradorController::class, 'editarUsuario'])->name('administrador.usuarios.editar');
+    Route::put('/administrador/usuarios/{user}', [AdministradorController::class, 'actualizarUsuario'])->name('administrador.usuarios.actualizar');
+    Route::delete('/administrador/usuarios/{user}', [AdministradorController::class, 'eliminarUsuario'])->name('administrador.usuarios.eliminar');
+
 });
 
 
@@ -89,6 +96,18 @@ Route::middleware(['auth', 'role:docente'])->group(function () {
     Route::delete('/docente/examenes/{id}', [ExamenDocenteController::class, 'eliminar'])->name('docente.examenes.eliminar');
 });
 
+Route::prefix('docente/reportes')->middleware(['auth'])->group(function () {
+    Route::get('/', [ReporteDocenteController::class, 'index'])->name('docente.reportes.index');
+    Route::get('/calificaciones', [ReporteDocenteController::class, 'calificaciones'])->name('docente.reportes.calificaciones');
+    Route::get('/promedios', [ReporteDocenteController::class, 'promedios'])->name('docente.reportes.promedios');
+    Route::get('/preguntas', [ReporteDocenteController::class, 'preguntasPorExamen'])->name('docente.reportes.preguntas');
+    Route::get('/estudiantes', [ReporteDocenteController::class, 'estudiantesPorCurso'])->name('docente.reportes.estudiantes');
+    Route::get('/rendimiento/{alumno_id}', [ReporteDocenteController::class, 'rendimientoIndividual'])->name('docente.reportes.rendimiento');
+});
+
+Route::get('/docente/materias', [DocenteController::class, 'materias'])->name('docente.materias');
+
+
 });
 
 
@@ -119,6 +138,12 @@ Route::middleware(['auth', 'role:alumno', 'permission:contestar examen'])->group
 Route::get('/alumno/examenes', [ExamenAlumnoController::class, 'listar'])
     ->name('alumno.examenes.disponibles');
 
+Route::get('/alumno/historial', [ExamenAlumnoController::class, 'historial'])
+    ->name('alumno.historial');
+Route::get('/alumno/historial/pdf', [ExamenAlumnoController::class, 'exportarPDF'])
+    ->name('alumno.historial.pdf');
+Route::get('/alumno/historial/excel', [ExamenAlumnoController::class, 'exportarExcel'])
+    ->name('alumno.historial.excel');
 
 
 

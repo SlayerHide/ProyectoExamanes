@@ -1,4 +1,5 @@
 <x-layouts.app title="Contestar Examen">
+
     <div class="p-6 max-w-5xl mx-auto">
         <h1 class="text-2xl font-bold mb-4">Examen: {{ $examen->titulo }}</h1>
 
@@ -23,4 +24,7 @@
             </button>
         </form>
     </div>
+
+    <audio id="alarma" src="{{ asset('sounds/alarma.mp3') }}"></audio>
+
 </x-layouts.app>

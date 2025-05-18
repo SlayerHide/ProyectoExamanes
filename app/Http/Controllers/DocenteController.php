@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+  use App\Models\GrupoMateria;
 
 class DocenteController extends Controller
 {
@@ -18,6 +19,15 @@ class DocenteController extends Controller
 
         return view('dashboard.docente');
     }
+
+
+public function materias()
+{
+    $materias = GrupoMateria::where('docente_id', Auth::id())->get();
+
+    return view('docente.materias', compact('materias'));
+}
+
 
 
     /**

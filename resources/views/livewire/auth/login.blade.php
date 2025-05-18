@@ -96,54 +96,62 @@ new #[Layout('components.layouts.auth')] class extends Component {
         return Str::transliterate(Str::lower($this->email) . '|' . request()->ip());
     }
 }; ?>
+<div class="min-h-screen bg-gradient-to-br from-indigo-200 to-blue-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center px-6">
+    <div class="bg-white dark:bg-gray-900 shadow-2xl rounded-2xl w-full max-w-md p-8 border border-indigo-300 dark:border-indigo-700">
 
-<div class="flex flex-col gap-6">
-    <x-auth-header :title="__('Log in to your account')" :description="__('Enter your email and password below to log in')" />
-
-    <!-- Session Status -->
-    <x-auth-session-status class="text-center" :status="session('status')" />
-
-    <form wire:submit="login" class="flex flex-col gap-6">
-        <!-- Email Address -->
-        <flux:input
-            wire:model="email"
-            :label="__('Email address')"
-            type="email"
-            required
-            autofocus
-            autocomplete="email"
-            placeholder="email@example.com" />
-
-        <!-- Password -->
-        <div class="relative">
-            <flux:input
-                wire:model="password"
-                :label="__('Password')"
-                type="password"
-                required
-                autocomplete="current-password"
-                :placeholder="__('Password')"
-                viewable />
-
-            @if (Route::has('password.request'))
-            <flux:link class="absolute end-0 top-0 text-sm" :href="route('password.request')" wire:navigate>
-                {{ __('Forgot your password?') }}
-            </flux:link>
-            @endif
+        {{-- Encabezado --}}
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-indigo-700 dark:text-indigo-300">Iniciar sesión</h2>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">Accede con tu correo y contraseña</p>
         </div>
 
-        <!-- Remember Me -->
-        <flux:checkbox wire:model="remember" :label="__('Remember me')" />
+        {{-- Estado de sesión --}}
+        <x-auth-session-status class="mb-4 text-center text-sm text-green-700 bg-green-100 px-4 py-2 rounded" :status="session('status')" />
 
-        <div class="flex items-center justify-end">
-            <flux:button variant="primary" type="submit" class="w-full">{{ __('Log in') }}</flux:button>
-        </div>
-    </form>
+        {{-- Formulario --}}
+        <form wire:submit="login" class="space-y-6">
+            {{-- Email --}}
+            <div>
+                <label class="block font-semibold text-indigo-600 dark:text-indigo-300 mb-1">Correo electrónico</label>
+                <input wire:model="email" type="email" placeholder="usuario@correo.com" required
+                    class="w-full px-4 py-3 rounded-lg border border-indigo-300 dark:border-indigo-600 bg-gray-50 dark:bg-gray-800 text-black dark:text-white focus:ring-2 focus:ring-indigo-400 transition shadow-sm">
+            </div>
 
-    @if (Route::has('register'))
-    <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
-        {{ __('Don\'t have an account?') }}
-        <flux:link :href="route('register')" wire:navigate>{{ __('Sign up') }}</flux:link>
+            {{-- Contraseña --}}
+            <div>
+                <label class="block font-semibold text-indigo-600 dark:text-indigo-300 mb-1">Contraseña</label>
+                <input wire:model="password" type="password" placeholder="••••••••" required
+                    class="w-full px-4 py-3 rounded-lg border border-indigo-300 dark:border-indigo-600 bg-gray-50 dark:bg-gray-800 text-black dark:text-white focus:ring-2 focus:ring-indigo-400 transition shadow-sm">
+                @if (Route::has('password.request'))
+                    <div class="text-right mt-2">
+                        <a href="{{ route('password.request') }}" class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline">
+                            ¿Olvidaste tu contraseña?
+                        </a>
+                    </div>
+                @endif
+            </div>
+
+            {{-- Recordarme --}}
+            <div class="flex items-center gap-2">
+                <input wire:model="remember" type="checkbox" class="accent-indigo-600 rounded">
+                <label class="text-sm text-gray-700 dark:text-gray-300">Recordarme</label>
+            </div>
+
+            {{-- Botón de envío --}}
+            <div>
+                <button type="submit"
+                    class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 rounded-lg font-semibold shadow transition">
+                    Iniciar sesión
+                </button>
+            </div>
+        </form>
+
+        {{-- Registro --}}
+        @if (Route::has('register'))
+            <div class="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
+                ¿No tienes cuenta?
+                <a href="{{ route('register') }}" class="text-indigo-600 hover:underline dark:text-indigo-400">Regístrate</a>
+            </div>
+        @endif
     </div>
-    @endif
 </div>

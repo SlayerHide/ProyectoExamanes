@@ -1,47 +1,66 @@
 <x-layouts.app title="Asignar Grupo">
-    <div class="flex flex-col items-center justify-center min-h-screen p-6 bg-purple-100 dark:bg-purple-900">
-        <div class="w-full max-w-3xl bg-white dark:bg-gray-800 shadow-lg rounded-xl p-6 border border-gray-200 dark:border-gray-700">
-            <h1 class="text-2xl font-bold text-center text-purple-800 dark:text-purple-200">Asignar Grupo y Materia</h1>
+    <div class="flex items-center justify-center min-h-screen bg-gradient-to-r from-purple-800 via-purple-900 to-purple-950 p-6">
+        <div class="w-full max-w-lg bg-white dark:bg-gray-900 shadow-2xl rounded-2xl p-8 border border-purple-300 dark:border-purple-800">
+            
+            <h1 class="text-3xl font-bold text-center text-purple-700 dark:text-purple-300 mb-6">
+                Asignar Grupo y Materia
+            </h1>
 
+            {{-- Éxito --}}
             @if (session('status'))
-            <div class="mt-4 bg-green-200 text-green-900 px-4 py-3 rounded">
-                {{ session('status') }}
-            </div>
+                <div class="mb-4 bg-green-200 text-green-900 px-4 py-3 rounded shadow">
+                    {{ session('status') }}
+                </div>
             @endif
 
+            {{-- Errores --}}
             @if ($errors->any())
-            <div class="mt-4 bg-red-200 text-red-900 px-4 py-3 rounded">
-                <ul class="list-disc pl-5">
-                    @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
+                <div class="mb-4 bg-red-100 text-red-800 px-4 py-3 rounded shadow">
+                    <ul class="list-disc pl-5 space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
             @endif
 
-            <form action="{{ route('administrador.asignargrupo.store') }}" method="POST" class="mt-6">
+            {{-- Formulario --}}
+            <form action="{{ route('administrador.asignargrupo.store') }}" method="POST" class="space-y-5">
                 @csrf
-                <label class="block text-purple-700 dark:text-purple-300 font-semibold">Grupo</label>
-                <input type="text" name="nombre" required
-                    class="w-full p-3 mt-2 rounded-lg border border-purple-300 focus:ring-2 focus:ring-purple-500">
 
-                <label class="block mt-4 text-purple-700 dark:text-purple-300 font-semibold">Materia</label>
-                <input type="text" name="materia" required
-                    class="w-full p-3 mt-2 rounded-lg border border-purple-300 focus:ring-2 focus:ring-purple-500">
+                {{-- Grupo --}}
+                <div>
+                    <label class="block text-sm font-semibold text-purple-700 dark:text-purple-300 mb-1">Grupo</label>
+                    <input type="text" name="nombre" required
+                        class="w-full p-3 rounded-lg bg-gray-50 dark:bg-gray-800 border border-purple-300 dark:border-purple-600 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-sm">
+                </div>
 
-                <label class="block mt-4 text-purple-700 dark:text-purple-300 font-semibold">Docente</label>
-                <select name="docente_id" required
-                    class="w-full p-3 mt-2 rounded-lg border border-purple-300 focus:ring-2 focus:ring-purple-500">
-                    <option value="">Selecciona un docente</option>
-                    @foreach ($docentes as $docente)
-                    <option value="{{ $docente->id }}">{{ $docente->name }}</option>
-                    @endforeach
-                </select>
+                {{-- Materia --}}
+                <div>
+                    <label class="block text-sm font-semibold text-purple-700 dark:text-purple-300 mb-1">Materia</label>
+                    <input type="text" name="materia" required
+                        class="w-full p-3 rounded-lg bg-gray-50 dark:bg-gray-800 border border-purple-300 dark:border-purple-600 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-sm">
+                </div>
 
-                <button type="submit"
-                    class="mt-6 w-full bg-purple-500 text-white p-3 rounded-lg shadow-md hover:bg-purple-600 transition">
-                    Asignar Grupo
-                </button>
+                {{-- Docente --}}
+                <div>
+                    <label class="block text-sm font-semibold text-purple-700 dark:text-purple-300 mb-1">Docente</label>
+                    <select name="docente_id" required
+                        class="w-full p-3 rounded-lg bg-gray-50 dark:bg-gray-800 border border-purple-300 dark:border-purple-600 text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-sm">
+                        <option value="">Selecciona un docente</option>
+                        @foreach ($docentes as $docente)
+                            <option value="{{ $docente->id }}">{{ $docente->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- Botón --}}
+                <div>
+                    <button type="submit"
+                        class="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg font-semibold transition shadow-md">
+                        Asignar Grupo
+                    </button>
+                </div>
             </form>
         </div>
     </div>
