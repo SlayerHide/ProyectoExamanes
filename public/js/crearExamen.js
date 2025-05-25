@@ -1,94 +1,93 @@
 document.addEventListener("DOMContentLoaded", function () {
     let preguntaIndex = 1;
 
-    // Agregar una nueva pregunta
-    document.getElementById("btn-agregar-pregunta").addEventListener("click", function () {
-        const preguntasContainer = document.getElementById("preguntas-container");
-        const nuevaPregunta = preguntasContainer.querySelector(".pregunta").cloneNode(true);
+    // Agregar nueva pregunta
+    const btnAgregarPregunta = document.getElementById("btn-agregar-pregunta");
+    const contenedor = document.getElementById("preguntas-container");
 
-        // Limpiar valores del clon
-        nuevaPregunta.setAttribute("data-index", preguntaIndex);
-        nuevaPregunta.querySelectorAll("input, textarea").forEach(el => {
-            if (el.type === "checkbox") {
-                el.checked = false;
-            } else {
-                el.value = "";
-            }
-        });
-
-        // Actualizar los nombres de campos del clon
-        actualizarNombres(nuevaPregunta, preguntaIndex);
-
-        preguntasContainer.appendChild(nuevaPregunta);
+    btnAgregarPregunta.addEventListener("click", () => {
+        const nuevaPregunta = crearBloquePregunta(preguntaIndex);
+        contenedor.appendChild(nuevaPregunta);
         preguntaIndex++;
     });
 
-    // Delegar eventos de agregar/eliminar opción
-    document.getElementById("preguntas-container").addEventListener("click", function (e) {
-        const pregunta = e.target.closest(".pregunta");
+    function crearBloquePregunta(index) {
+        const div = document.createElement("div");
+        div.className = "pregunta bg-white dark:bg-gray-800 border border-purple-300 dark:border-purple-700 p-6 rounded-xl shadow-md space-y-4 mb-6";
+        div.setAttribute("data-index", index);
 
+        div.innerHTML = `
+            <input type="hidden" name="preguntas[${index}][tipo]" value="opcion_multiple">
+            <div>
+                <label class="block font-semibold mb-1">Pregunta:</label>
+                <input type="text" name="preguntas[${index}][contenido]" required maxlength="500"
+                    class="w-full p-3 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600">
+            </div>
+
+            <div>
+                <label class="block font-semibold mb-1">Porcentaje:</label>
+                <input type="number" name="preguntas[${index}][porcentaje]" required min="0" max="100"
+                    class="w-full p-3 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600">
+            </div>
+
+            <div>
+                <label class="block font-semibold mb-1">Retroalimentación:</label>
+                <input type="text" name="preguntas[${index}][retroalimentacion]" required maxlength="500"
+                    class="w-full p-3 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600">
+            </div>
+
+            <div>
+                <label class="block font-semibold mb-1">Opciones:</label>
+                <div class="opciones grid grid-cols-1 md:grid-cols-2 gap-4">
+                    ${crearOpcionHTML(index, 0)}
+                    ${crearOpcionHTML(index, 1)}
+                </div>
+                <div class="mt-4 flex gap-4">
+                    <button type="button" class="btn-agregar-opcion text-blue-600 hover:underline text-sm" data-index="${index}">
+                        ➕ Agregar otra opción
+                    </button>
+                    <button type="button" class="btn-eliminar-opcion text-red-500 hover:text-red-700 text-sm" data-index="${index}">
+                        🗑️ Eliminar última opción
+                    </button>
+                </div>
+            </div>
+        `;
+
+        return div;
+    }
+
+    function crearOpcionHTML(preguntaIndex, opcionIndex) {
+        return `
+            <div>
+                <input type="text" name="preguntas[${preguntaIndex}][opciones][${opcionIndex}][texto]" required placeholder="Texto opción"
+                    class="w-full p-3 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600">
+                <label class="inline-flex items-center mt-2 text-sm">
+                    <input type="checkbox" name="preguntas[${preguntaIndex}][opciones][${opcionIndex}][es_correcta]" class="mr-2">
+                    Correcta
+                </label>
+            </div>
+        `;
+    }
+
+    // Delegación para agregar/eliminar opciones dinámicamente
+    contenedor.addEventListener("click", function (e) {
         if (e.target.classList.contains("btn-agregar-opcion")) {
-            const opcionesContainer = pregunta.querySelector(".opciones");
-            const indexPregunta = pregunta.getAttribute("data-index");
-            const nuevaOpcion = opcionesContainer.querySelector("div").cloneNode(true);
-
-            const nuevaIndex = opcionesContainer.children.length;
-
-            // Limpiar valores
-            nuevaOpcion.querySelector("input[type='text']").value = "";
-            nuevaOpcion.querySelector("input[type='checkbox']").checked = false;
-
-            // Actualizar atributos
-            const textoInput = nuevaOpcion.querySelector("input[type='text']");
-            textoInput.name = `preguntas[${indexPregunta}][opciones][${nuevaIndex}][texto]`;
-            textoInput.placeholder = `Opción ${nuevaIndex + 1}`;
-
-            const checkbox = nuevaOpcion.querySelector("input[type='checkbox']");
-            checkbox.name = `preguntas[${indexPregunta}][opciones][${nuevaIndex}][es_correcta]`;
-
-            opcionesContainer.appendChild(nuevaOpcion);
+            const preguntaDiv = e.target.closest(".pregunta");
+            const index = preguntaDiv.getAttribute("data-index");
+            const opcionesContenedor = preguntaDiv.querySelector(".opciones");
+            const nuevaIndex = opcionesContenedor.children.length;
+            opcionesContenedor.insertAdjacentHTML("beforeend", crearOpcionHTML(index, nuevaIndex));
         }
 
         if (e.target.classList.contains("btn-eliminar-opcion")) {
-            const opcionesContainer = pregunta.querySelector(".opciones");
-            if (opcionesContainer.children.length > 2) {
-                opcionesContainer.removeChild(opcionesContainer.lastElementChild);
+            const preguntaDiv = e.target.closest(".pregunta");
+            const opcionesContenedor = preguntaDiv.querySelector(".opciones");
+
+            if (opcionesContenedor.children.length > 2) {
+                opcionesContenedor.lastElementChild.remove();
             } else {
                 alert("Debe haber al menos 2 opciones por pregunta.");
             }
         }
     });
-
-    function actualizarNombres(preguntaElement, index) {
-        preguntaElement.querySelectorAll("[name]").forEach(el => {
-            if (el.name.includes("contenido")) {
-                el.name = `preguntas[${index}][contenido]`;
-            }
-            if (el.name.includes("porcentaje")) {
-                el.name = `preguntas[${index}][porcentaje]`;
-            }
-            if (el.name.includes("retroalimentacion")) {
-                el.name = `preguntas[${index}][retroalimentacion]`;
-            }
-            if (el.name.includes("tipo")) {
-                el.name = `preguntas[${index}][tipo]`;
-            }
-        });
-
-        // Reasignar nombres de opciones
-        const opciones = preguntaElement.querySelectorAll(".opciones > div");
-        opciones.forEach((op, i) => {
-            const texto = op.querySelector("input[type='text']");
-            const check = op.querySelector("input[type='checkbox']");
-            texto.name = `preguntas[${index}][opciones][${i}][texto]`;
-            texto.placeholder = `Opción ${i + 1}`;
-            check.name = `preguntas[${index}][opciones][${i}][es_correcta]`;
-        });
-
-        // Actualizar botón de opción
-        const btnAgregar = preguntaElement.querySelector(".btn-agregar-opcion");
-        const btnEliminar = preguntaElement.querySelector(".btn-eliminar-opcion");
-        btnAgregar.setAttribute("data-index", index);
-        btnEliminar.setAttribute("data-index", index);
-    }
 });
