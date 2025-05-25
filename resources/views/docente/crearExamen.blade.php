@@ -73,14 +73,14 @@
                     <div>
                         <label class="block font-semibold mb-1">Opciones:</label>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 opciones">
-                            <div>
+                            <div class = "opcion">
                                 <input type="text" name="preguntas[0][opciones][0][texto]" placeholder="Opción 1" required
                                        class="w-full p-3 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600">
                                 <label class="inline-flex items-center mt-2 text-sm">
                                     <input type="checkbox" name="preguntas[0][opciones][0][es_correcta]" class="mr-2"> Correcta
                                 </label>
                             </div>
-                            <div>
+                            <div class = "opcion">
                                 <input type="text" name="preguntas[0][opciones][1][texto]" placeholder="Opción 2" required
                                        class="w-full p-3 rounded-lg bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600">
                                 <label class="inline-flex items-center mt-2 text-sm">
@@ -91,6 +91,9 @@
                         <button type="button" class="btn-agregar-opcion mt-4 text-blue-600 hover:underline text-sm" data-index="0">
                             ➕ Agregar otra opción
                         </button>
+                        <button type="button" class="btn-eliminar-opcion text-red-500 hover:text-red-700 text-sm" title="Eliminar opción">
+                            🗑️ Eliminar opcion</button>
+
                     </div>
                 </div>
             </div>
