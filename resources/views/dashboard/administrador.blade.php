@@ -49,6 +49,8 @@
                     <p class="text-gray-600 dark:text-gray-400">Modifica, elimina o consulta los datos de usuarios registrados.</p>
                 </div>
             </a>
+             {{-- Crea Usuarios --}}
+              
 
         </div>
     </div>

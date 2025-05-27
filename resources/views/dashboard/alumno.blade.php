@@ -37,6 +37,8 @@
                     </div>
                     <p class="text-gray-600 dark:text-gray-400">Consulta tus calificaciones y exámenes realizados.</p>
                 </a>
+
+
             </div>
         </div>
     </div>
