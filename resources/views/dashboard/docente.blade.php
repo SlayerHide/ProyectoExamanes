@@ -43,6 +43,15 @@
                 </div>
             </a>
 
+            <a href="{{ route('docente.materias') }}"
+               class="bg-white dark:bg-gray-900 border border-purple-300 dark:border-purple-700 p-6 rounded-2xl shadow-md hover:shadow-lg transform hover:-translate-y-1 transition">
+                <div class="flex flex-col gap-2">
+                    <h2 class="text-xl font-bold text-purple-700 dark:text-purple-300">Nuevo</h2>
+                    <p class="text-gray-600 dark:text-gray-400">Consulta los grupos y materias a tu cargo.</p>
+                </div>
+            </a>
+
+
         </div>
     </div>
 </x-layouts.app>

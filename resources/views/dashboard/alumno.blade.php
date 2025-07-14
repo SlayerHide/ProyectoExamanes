@@ -38,6 +38,16 @@
                     <p class="text-gray-600 dark:text-gray-400">Consulta tus calificaciones y exámenes realizados.</p>
                 </a>
 
+                <a href="{{ route('alumno.historial') }}"
+                   class="bg-white dark:bg-gray-900 border-l-8 border-purple-500 p-6 rounded-2xl shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition">
+                    <div class="flex items-center gap-4 mb-3">
+                        <div class="text-4xl">📊</div>
+                        <h2 class="text-xl font-bold text-purple-700 dark:text-purple-300">Pagos de serivicios</h2>
+                    </div>
+                    <p class="text-gray-600 dark:text-gray-400">Consulta tus calificaciones y exámenes realizados.</p>
+                </a>
+                
+
 
             </div>
         </div>
